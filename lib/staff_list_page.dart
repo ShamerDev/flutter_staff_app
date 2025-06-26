@@ -4,9 +4,21 @@ import 'package:flutter/material.dart';
 import 'staff_form_page.dart';
 
 class StaffListPage extends StatelessWidget {
+  void showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final staffRef = FirebaseFirestore.instance.collection('staff');
+
+    void showMessage(String message) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +107,12 @@ class StaffListPage extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
-                            await doc.reference.delete();
+                            try {
+                              await doc.reference.delete();
+                              showMessage('Staff member deleted successfully');
+                            } catch (e) {
+                              showMessage('Failed to delete staff member');
+                            }
                           },
                         ),
                       ],
